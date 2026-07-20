@@ -1,0 +1,219 @@
+{
+  "main": {
+    "id": "7dcba2a277ad3a9a",
+    "type": "split",
+    "children": [
+      {
+        "id": "b88e84a76e59a97c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "0186c3ddd2954885",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "68e937bda476ddc3",
+    "type": "split",
+    "children": [
+      {
+        "id": "16787a7fa5383446",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "a3f985444798cbc6",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "a778b844278e6d8b",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "2e3d2bfa2985abc2",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "1a217a89c59d1fa3",
+    "type": "split",
+    "children": [
+      {
+        "id": "4a5385f6cfdd961a",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "4cb96d246ce48595",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "18f93c01154eb557",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "41fab8b249e70a83",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "f19c8e9df02d3677",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "cfdd7ccf63b40c59",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "0186c3ddd2954885",
+  "lastOpenFiles": [
+    "repository_scanner/tests/test_scan_service.py",
+    "repository_scanner/tests/test_extractor.py",
+    "repository_scanner/tests/test_traversal.py",
+    "repository_scanner/tests/fixtures/sample_repo/requirements.txt",
+    "repository_scanner/tests/fixtures/sample_repo/migrations/001_create_customers.sql",
+    "repository_scanner/tests/fixtures/sample_repo/migrations",
+    "repository_scanner/tests/fixtures/sample_repo/app/etl.py",
+    "repository_scanner/tests/fixtures/sample_repo/app/db.py",
+    "repository_scanner/tests/fixtures/sample_repo/app/main.py",
+    "repository_scanner/tests/fixtures/sample_repo/app",
+    "repository_scanner/tests/fixtures/sample_repo",
+    "RebootX_Master_Vault/RebootX_Master_Vault/06_Backend/Services.md",
+    "RebootX_Master_Vault/RebootX_Master_Vault/06_Backend/FastAPI.md",
+    "RebootX_Master_Vault/RebootX_Master_Vault/06_Backend/Error Handling.md",
+    "RebootX_Master_Vault/RebootX_Master_Vault/06_Backend/Folder Structure.md",
+    "RebootX_Master_Vault/RebootX_Master_Vault/04_System_Design/REST APIs.md",
+    "RebootX_Master_Vault/RebootX_Master_Vault/04_System_Design/Caching.md",
+    "RebootX_Engineering_Playbook/RebootX_Engineering_Playbook/01_Product/Requirements.md",
+    "RebootX_Master_Vault/RebootX_Master_Vault/14_Daily_Notes/Daily Template.md",
+    "RebootX_Master_Vault/RebootX_Master_Vault/13_Research/References.md",
+    "RebootX_Master_Vault/RebootX_Master_Vault/13_Research/Ideas.md",
+    "RebootX_Master_Vault/RebootX_Master_Vault/13_Research/Future Improvements.md",
+    "RebootX_Master_Vault/RebootX_Master_Vault/12_Diagrams/Pipeline.md",
+    "RebootX_Master_Vault/RebootX_Master_Vault/12_Diagrams/ERD.md",
+    "RebootX_Master_Vault/RebootX_Master_Vault/12_Diagrams/Sequence.md",
+    "RebootX_Master_Vault/RebootX_Master_Vault/12_Diagrams/Architecture.md",
+    "RebootX_Master_Vault/RebootX_Master_Vault/11_ADRs/README.md",
+    "RebootX_Master_Vault/RebootX_Master_Vault/11_ADRs/ADR-004-Workflow.md",
+    "RebootX_Master_Vault/RebootX_Master_Vault/11_ADRs/ADR-003-ChromaDB.md",
+    "RebootX_Master_Vault/RebootX_Master_Vault/11_ADRs/ADR-002-FastAPI.md",
+    "RebootX_Master_Vault/RebootX_Master_Vault/11_ADRs/ADR-001-Monolith.md",
+    "RebootX_Master_Vault/RebootX_Master_Vault/10_Development/Coding Standards.md",
+    "RebootX_Master_Vault/RebootX_Master_Vault/10_Development/Git Workflow.md",
+    "RebootX_Master_Vault/RebootX_Master_Vault/10_Development/Sprint3.md",
+    "RebootX_Master_Vault/RebootX_Master_Vault/10_Development/Sprint2.md",
+    "RebootX_Master_Vault/RebootX_Master_Vault/10_Development/Sprint1.md",
+    "RepoScanner/Untitled.canvas"
+  ]
+}

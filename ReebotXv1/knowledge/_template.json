@@ -1,0 +1,18 @@
+{
+  "documents": [
+    {
+      "id": "TEMPLATE-REPLACE-ME",
+      "text": "3-8 sentences of specific compatibility knowledge with exact versions, breaking changes, and what to verify.",
+      "metadata": {
+        "technology_type": "database | emr | python | mwaa",
+        "source": "Official source name (e.g., PostgreSQL 15 Release Notes)",
+        "topic": "version | dependency | config | integration",
+        "version_from": "13",
+        "version_to": "15",
+        "risk_hint": "Low | Medium | High | Critical",
+        "validation_checks": ["regression", "integration", "rollback"],
+        "domain": "insurance"
+      }
+    }
+  ]
+}

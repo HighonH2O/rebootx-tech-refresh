@@ -1,0 +1,66 @@
+{
+  "documents": [
+    {
+      "id": "mwaa-2x-to-3x-breaking",
+      "text": "Amazon MWAA 2.x to 3.x represents a major Airflow version jump (Airflow 2.x to 3.x). Key changes: TaskFlow API becomes the primary DAG authoring pattern, classic operator imports reorganized under airflow.providers namespace. XCom backend changes — custom XCom backends need migration. DAG serialization is mandatory — dynamic DAG generation patterns may need refactoring. Connections and Variables API changed. Web UI completely redesigned with React — custom plugins using Flask views need rewrite.",
+      "metadata": {
+        "technology_type": "mwaa",
+        "source": "Apache Airflow 3.0 Migration Guide",
+        "topic": "version",
+        "version_from": "2",
+        "version_to": "3",
+        "risk_hint": "Critical",
+        "validation_checks": ["regression", "integration", "rollback"],
+        "domain": "insurance"
+      }
+    },
+    {
+      "id": "mwaa-provider-packages",
+      "text": "MWAA provider package compatibility during upgrades: apache-airflow-providers-amazon must match MWAA version — check AWS release notes for supported provider versions. Provider packages for databases (postgres, mysql), cloud (aws, gcp), and messaging (kafka, redis) are versioned independently. Pin all provider versions in requirements.txt. MWAA 3.x requires providers with Airflow 3.0 compatibility — many community providers lag behind. Test all DAG imports in local Airflow environment before deploying to MWAA.",
+      "metadata": {
+        "technology_type": "mwaa",
+        "source": "AWS MWAA Documentation",
+        "topic": "dependency",
+        "risk_hint": "High",
+        "validation_checks": ["build", "integration"],
+        "domain": "insurance"
+      }
+    },
+    {
+      "id": "mwaa-environment-config",
+      "text": "MWAA environment configuration risks: startup script (startup.sh) replaces requirements.txt for some configurations in newer versions. Environment class (mw1.small, mw1.medium) affects scheduler performance during migration. Worker autoscaling configuration needs validation — min/max worker counts may need adjustment. Logging configuration changes between MWAA versions — CloudWatch log group paths may change. KMS encryption key policies need validation after environment recreation.",
+      "metadata": {
+        "technology_type": "mwaa",
+        "source": "AWS MWAA Configuration Guide",
+        "topic": "config",
+        "risk_hint": "Medium",
+        "validation_checks": ["integration", "rollback"],
+        "domain": "insurance"
+      }
+    },
+    {
+      "id": "mwaa-s3-dag-deployment",
+      "text": "MWAA DAG deployment risks during upgrades: S3 bucket DAG sync timing may cause temporary DAG import failures during version transition. plugins.zip structure requirements change between MWAA versions — validate plugin packaging. requirements.txt constraints file format strictened in newer MWAA versions. DAGs using local imports (from dags.helpers import ...) need __init__.py files in all subdirectories. Large DAG bags (100+ DAGs) may timeout during initial parse on upgraded environment.",
+      "metadata": {
+        "technology_type": "mwaa",
+        "source": "AWS MWAA Deployment Guide",
+        "topic": "integration",
+        "risk_hint": "Medium",
+        "validation_checks": ["integration", "regression", "performance"],
+        "domain": "insurance"
+      }
+    },
+    {
+      "id": "mwaa-database-backend",
+      "text": "MWAA metadata database considerations during upgrades: MWAA uses a managed Aurora PostgreSQL backend — schema migrations run automatically during version upgrade. However, custom database connections configured in Airflow Connections may need updating. Airflow 3.x changes the metadata schema significantly — DAG run history is preserved but task instance records may show differently in new UI. Alembic migration is handled by MWAA but can timeout on large histories — consider archiving old DAG runs before upgrade.",
+      "metadata": {
+        "technology_type": "mwaa",
+        "source": "AWS MWAA Architecture Guide",
+        "topic": "config",
+        "risk_hint": "Medium",
+        "validation_checks": ["data", "rollback"],
+        "domain": "insurance"
+      }
+    }
+  ]
+}

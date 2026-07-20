@@ -1,0 +1,6 @@
+fastapi==0.104.0
+psycopg2==2.9.3
+SQLAlchemy==1.4.39
+pandas==1.5.3
+alembic==1.8.1
+uvicorn==0.24.0

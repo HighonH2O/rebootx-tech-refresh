@@ -1,0 +1,80 @@
+{
+  "documents": [
+    {
+      "id": "py-39-to-312-breaking",
+      "text": "Python 3.9 to 3.12 is a 3-minor-version jump with significant breaking changes. Key removals: distutils removed entirely in 3.12 (PEP 632) — replace with setuptools. asyncio.coroutine decorator removed. imp module removed — use importlib. typing.TypeAlias introduced in 3.10, required for forward references in 3.12. f-string parser rewritten in 3.12 — some edge-case f-string expressions may behave differently. match/case statements available from 3.10. Performance improvements from specializing adaptive interpreter (3.11+) may mask bugs that appear under load.",
+      "metadata": {
+        "technology_type": "python",
+        "source": "Python 3.12 What's New",
+        "topic": "version",
+        "version_from": "3.9",
+        "version_to": "3.12",
+        "risk_hint": "High",
+        "validation_checks": ["regression", "build", "integration"],
+        "domain": "insurance"
+      }
+    },
+    {
+      "id": "py-dependency-compat",
+      "text": "Python package compatibility with 3.12: numpy < 1.24 does not support Python 3.12. pandas < 2.0 may fail to install on 3.12 due to Cython compilation. SQLAlchemy 1.4 works on 3.12 but 2.0 is recommended. celery < 5.3 has issues with Python 3.12 eventlet. cryptography requires Rust compiler for 3.12 builds. boto3/botocore have full 3.12 support from version 1.28+. Always regenerate requirements lock files and test full installation on target Python version.",
+      "metadata": {
+        "technology_type": "python",
+        "source": "PyPI Compatibility Reports",
+        "topic": "dependency",
+        "risk_hint": "High",
+        "validation_checks": ["build", "regression"],
+        "domain": "insurance"
+      }
+    },
+    {
+      "id": "py-311-to-312-changes",
+      "text": "Python 3.11 to 3.12 changes: asyncio.TaskGroup enhancements, per-interpreter GIL (PEP 684, experimental). Type parameter syntax (PEP 695) allows generic class definitions without TypeVar. Improved error messages continue from 3.11. hashlib changes: MD5 and SHA1 may be blocked in FIPS mode. sqlite3.connect autocommit parameter added. pathlib.Path.walk() added as os.walk replacement. Deprecated: calendar.January/February constants, shutil.rmtree onerror parameter.",
+      "metadata": {
+        "technology_type": "python",
+        "source": "Python 3.12 Changelog",
+        "topic": "version",
+        "version_from": "3.11",
+        "version_to": "3.12",
+        "risk_hint": "Low",
+        "validation_checks": ["regression"],
+        "domain": "insurance"
+      }
+    },
+    {
+      "id": "py-virtualenv-migration",
+      "text": "Virtual environment and packaging changes across Python 3.9-3.12: venv module behavior consistent but pip version bundled changes significantly. setuptools is no longer bundled in 3.12 — must be explicitly installed. pyproject.toml is now the recommended build configuration (setup.py deprecated). pip install --editable uses PEP 660 build backend in 3.12. Poetry 1.7+ and PDM fully support 3.12. Conda environments may need rebuild with updated conda-forge channel packages.",
+      "metadata": {
+        "technology_type": "python",
+        "source": "Python Packaging User Guide",
+        "topic": "config",
+        "risk_hint": "Medium",
+        "validation_checks": ["build", "integration"],
+        "domain": "insurance"
+      }
+    },
+    {
+      "id": "py-airflow-integration",
+      "text": "Apache Airflow integration risks with Python upgrades: Airflow 2.6+ supports Python 3.12 but many provider packages lag behind. Custom operators using deprecated stdlib modules (distutils, imp) will break. Airflow connections using psycopg2 need version validation. DAG serialization behavior changes may cause import errors if DAGs use features removed in newer Python. Test all DAGs in staging with new Python version before production cutover. Pin provider package versions and validate each one.",
+      "metadata": {
+        "technology_type": "python",
+        "source": "Apache Airflow Migration Notes",
+        "topic": "integration",
+        "risk_hint": "Medium",
+        "validation_checks": ["integration", "regression", "rollback"],
+        "domain": "insurance"
+      }
+    },
+    {
+      "id": "py-testing-frameworks",
+      "text": "Testing framework compatibility with Python 3.12: pytest 7.4+ fully supports 3.12. unittest.mock changes: MagicMock now supports __aiter__ natively. coverage.py 7.3+ required for 3.12 due to bytecode changes. tox 4.x recommended for multi-Python testing. Hypothesis 6.82+ needed. mypy 1.7+ required for 3.12 type syntax. CI/CD pipelines need updated Python installation steps — deadsnakes PPA or pyenv for Ubuntu, official installers for Windows/macOS.",
+      "metadata": {
+        "technology_type": "python",
+        "source": "Python Testing Ecosystem Docs",
+        "topic": "dependency",
+        "risk_hint": "Low",
+        "validation_checks": ["build", "regression"],
+        "domain": "insurance"
+      }
+    }
+  ]
+}

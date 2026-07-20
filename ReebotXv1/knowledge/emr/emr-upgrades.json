@@ -1,0 +1,66 @@
+{
+  "documents": [
+    {
+      "id": "emr-6x-to-7x-breaking",
+      "text": "Amazon EMR 6.x to 7.x is a major upgrade. EMR 7.0 moves to Amazon Linux 2023 from Amazon Linux 2, which changes system library paths and package managers (yum to dnf). Spark 3.5 is the default in EMR 7.0 (was 3.3 in EMR 6.10). Hadoop 3.3.6 replaces 3.3.3. Bootstrap actions that install OS packages via yum will fail — update to dnf. Custom AMIs built for AL2 are incompatible. Python 3.9 is the new system default (was 3.7). JDK 17 replaces JDK 8/11 — review application Java compatibility.",
+      "metadata": {
+        "technology_type": "emr",
+        "source": "AWS EMR 7.0 Release Notes",
+        "topic": "version",
+        "version_from": "6.10",
+        "version_to": "7.0",
+        "risk_hint": "Critical",
+        "validation_checks": ["regression", "build", "integration"],
+        "domain": "insurance"
+      }
+    },
+    {
+      "id": "emr-spark-compat",
+      "text": "Spark version compatibility across EMR releases: EMR 6.10 ships Spark 3.3.1, EMR 7.0 ships Spark 3.5.0. Key breaking changes in Spark 3.4-3.5: DataFrame.unionAll deprecated, spark.sql.adaptive.enabled defaults to true, Pandas API on Spark replaces pyspark.pandas. PySpark applications using RDD API patterns may see performance regression with AQE. Spark Structured Streaming checkpoint format changed — existing streaming jobs need checkpoint reset. Delta Lake 3.0+ required for Spark 3.5 compatibility.",
+      "metadata": {
+        "technology_type": "emr",
+        "source": "Apache Spark Migration Guide",
+        "topic": "dependency",
+        "risk_hint": "High",
+        "validation_checks": ["regression", "integration", "performance"],
+        "domain": "insurance"
+      }
+    },
+    {
+      "id": "emr-bootstrap-actions",
+      "text": "EMR bootstrap action risks during upgrades: scripts installing Python packages via pip may break if system Python version changes. Conda environments tied to specific Python versions need rebuild. Custom JAR dependencies compiled against older Hadoop/Spark APIs may throw NoSuchMethodError at runtime. S3 committer configuration changed in EMR 7.0 — magic committer is now default. EMRFS consistent view is deprecated in EMR 7.0 — migrate to S3 strong consistency (default since Dec 2020).",
+      "metadata": {
+        "technology_type": "emr",
+        "source": "AWS EMR Best Practices Guide",
+        "topic": "config",
+        "risk_hint": "High",
+        "validation_checks": ["build", "integration", "rollback"],
+        "domain": "insurance"
+      }
+    },
+    {
+      "id": "emr-hive-metastore",
+      "text": "Hive Metastore compatibility during EMR upgrades: EMR 7.0 uses Hive 3.1.3 (EMR 6.x used Hive 3.1.2). External Hive Metastore databases (AWS Glue Data Catalog or external MySQL/PostgreSQL) need schema validation after upgrade. Hive ACID tables created on older versions may need compaction before access on new version. Iceberg tables are recommended over Hive ACID for new workloads. Glue Data Catalog compatibility is maintained but test partition pruning performance.",
+      "metadata": {
+        "technology_type": "emr",
+        "source": "AWS EMR Migration Guide",
+        "topic": "integration",
+        "risk_hint": "Medium",
+        "validation_checks": ["data", "integration", "regression"],
+        "domain": "insurance"
+      }
+    },
+    {
+      "id": "emr-security-config",
+      "text": "EMR security configuration changes in major upgrades: Kerberos configuration paths change with OS upgrade (AL2 to AL2023). Lake Formation integration permissions may need re-grant. Security groups and VPC configurations are preserved but network ACL rules should be validated. Instance metadata service defaults to IMDSv2 in EMR 7.0 — applications using IMDSv1 for credential retrieval will fail. Update AWS SDK to latest version to support IMDSv2.",
+      "metadata": {
+        "technology_type": "emr",
+        "source": "AWS EMR Security Guide",
+        "topic": "config",
+        "risk_hint": "High",
+        "validation_checks": ["integration", "rollback"],
+        "domain": "insurance"
+      }
+    }
+  ]
+}
