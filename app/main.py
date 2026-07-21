@@ -14,10 +14,12 @@ from app.models.schemas import (
     HealthResponse,
     KnowledgeDocumentInput,
     KnowledgeStatsResponse,
+    ScanAndAssessRequest,
     UpgradeAssessment,
     UpgradeRequest,
 )
 from app.services.assessment_service import AssessmentService
+from app.services.bridge_service import BridgeService
 from app.services.capture_service import CaptureError, CaptureService
 from app.services.knowledge_service import KnowledgeService
 from app.services.ollama_service import OllamaService
@@ -29,6 +31,7 @@ knowledge_service = KnowledgeService()
 ollama_service = OllamaService()
 assessment_service = AssessmentService(knowledge_service, ollama_service)
 capture_service = CaptureService()
+bridge_service = BridgeService()
 
 
 @asynccontextmanager
@@ -140,6 +143,38 @@ async def capture_and_assess(request: CaptureRequest) -> UpgradeAssessment:
     except Exception as exc:
         logger.exception("Assessment failed")
         raise HTTPException(status_code=500, detail=f"Assessment failed: {exc}") from exc
+
+
+@app.post(
+    "/api/v1/scan-and-assess",
+    tags=["Capture"],
+    summary="Scan a local repository (dependency graph) and immediately assess the upgrade",
+)
+async def scan_and_assess(request: ScanAndAssessRequest) -> dict:
+    try:
+        scan_dict, upgrade_request = bridge_service.scan_and_build_request(
+            repo_path=request.repo_path,
+            target_version=request.target_version,
+            current_version=request.current_version,
+            environment=request.environment or "production",
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except Exception as exc:
+        logger.exception("Repository scan failed")
+        raise HTTPException(status_code=500, detail=f"Scan failed: {exc}") from exc
+
+    try:
+        assessment = await assessment_service.assess(upgrade_request)
+    except Exception as exc:
+        logger.exception("Assessment failed")
+        raise HTTPException(status_code=500, detail=f"Assessment failed: {exc}") from exc
+
+    return {
+        "scan_result": scan_dict,
+        "upgrade_request": upgrade_request.model_dump(),
+        "assessment": assessment.model_dump(),
+    }
 
 
 @app.post("/api/v1/reload-knowledge", tags=["Knowledge"])

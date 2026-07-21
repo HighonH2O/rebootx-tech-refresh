@@ -20,6 +20,31 @@ class RiskLevel(str, Enum):
     CRITICAL = "Critical"
 
 
+class IntegrationDetail(BaseModel):
+    """A consumer of the system being upgraded.
+
+    Modeling *who* consumes a system (and how) is what lets RebootX surface
+    non-trivial, cross-team / cross-language integration risks. Example: a
+    single PostgreSQL upgrade may be consumed by a Java service over JDBC, a
+    Python ETL over psycopg2, and a .NET report over ODBC — each with its own
+    driver-compatibility profile and independent release cycle.
+    """
+
+    name: str = Field(..., description="Name of the consuming system/team", examples=["Claims processing service"])
+    consumer_technology: Optional[str] = Field(
+        default=None,
+        description="Language/stack of the consumer",
+        examples=["java", "python", "dotnet", "nodejs", "go", "scala"],
+    )
+    protocol: Optional[str] = Field(
+        default=None,
+        description="How it connects/consumes",
+        examples=["JDBC", "ODBC", "psycopg2", "REST", "gRPC", "Kafka", "shared-database", "parquet"],
+    )
+    owner_team: Optional[str] = Field(default=None, description="Team that owns this consumer")
+    notes: Optional[str] = Field(default=None)
+
+
 class UpgradeRequest(BaseModel):
     technology_type: TechnologyType = Field(..., description="Type of technology being upgraded")
     current_version: str = Field(..., examples=["PostgreSQL 13.4", "Python 3.9", "EMR 6.10"])
@@ -28,6 +53,10 @@ class UpgradeRequest(BaseModel):
     integrations: list[str] = Field(
         default_factory=list,
         examples=[["Airflow DAGs", "Spark jobs", "BI reporting layer"]],
+    )
+    integration_details: list[IntegrationDetail] = Field(
+        default_factory=list,
+        description="Structured consumers with language/protocol for deep cross-team risk analysis",
     )
     environment: Optional[str] = Field(default="production", examples=["production", "staging"])
     notes: Optional[str] = Field(default=None, description="Additional context about the upgrade")
@@ -96,6 +125,26 @@ class CapturedInput(BaseModel):
     warnings: list[str] = Field(default_factory=list, description="Anything the user should confirm manually")
     source_type: SourceType
     location: str
+
+
+class ScanAndAssessRequest(BaseModel):
+    """Bridge endpoint: scan a repository, then run an assessment in one call."""
+
+    repo_path: str = Field(
+        ...,
+        description="Path to the repository to scan",
+        examples=["./", "C:/Coding Practice/rebootx"],
+    )
+    target_version: str = Field(
+        ...,
+        description="Target version for the upgrade",
+        examples=["PostgreSQL 16", "Python 3.12"],
+    )
+    current_version: Optional[str] = Field(
+        default=None,
+        description="Current version (auto-detected from the scan if omitted)",
+    )
+    environment: Optional[str] = Field(default="production", examples=["production", "staging"])
 
 
 class KnowledgeDocumentInput(BaseModel):

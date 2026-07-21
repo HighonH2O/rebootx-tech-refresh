@@ -10,6 +10,7 @@ from app.models.schemas import (
     UpgradeAssessment,
     UpgradeRequest,
 )
+from app.services.integration_analyzer import analyze_integrations
 from app.services.knowledge_service import KnowledgeService
 from app.services.ollama_service import OllamaService
 
@@ -35,7 +36,18 @@ Return valid JSON with this exact shape:
   "recommended_actions": ["action 1", "action 2"],
   "confidence": "High|Medium|Low"
 }
-Identify at least 2 risks when possible. Be conservative for production environments."""
+Identify at least 2 risks when possible. Be conservative for production environments.
+
+Pay special attention to INTEGRATION risks that are NOT trivial. When a system is consumed
+by multiple teams or multiple languages, reason about each consumer separately:
+- A single change (e.g. a database or library upgrade) can break a Java (JDBC) consumer, a
+  Python (psycopg2) consumer, and a .NET (ODBC) consumer in DIFFERENT ways — each has its own
+  driver/client version requirements and release cycle.
+- Consider contract/serialization risks across languages (REST payload shapes, gRPC/protobuf
+  stubs, Kafka message schemas, shared Parquet/Avro files).
+- Call out the cross-team coordination risk when heterogeneous consumers must all be validated
+  before a synchronized cutover.
+Prefer specific, per-consumer risks over a single generic "integrations may be affected" risk."""
 
 
 class AssessmentService:
@@ -55,17 +67,62 @@ class AssessmentService:
         if await self.ollama.is_available():
             ai_result = await self._assess_with_ai(request, context_block)
             if ai_result:
-                return ai_result
+                return self._merge_integration_risks(ai_result, request)
 
         return self._assess_with_rules(request, context_docs)
+
+    def _merge_integration_risks(
+        self, assessment: UpgradeAssessment, request: UpgradeRequest
+    ) -> UpgradeAssessment:
+        """Guarantee deterministic per-consumer integration risks are present.
+
+        The LLM may miss specific driver/cross-language risks; the analyzer is
+        deterministic, so we fold in any of its risks the AI didn't already cover.
+        """
+        analyzer_risks = analyze_integrations(
+            technology_type=request.technology_type,
+            integration_details=request.integration_details,
+            plain_integrations=request.integrations,
+        )
+        if not analyzer_risks:
+            return assessment
+
+        existing_titles = {r.title.lower() for r in assessment.risks}
+        added = [r for r in analyzer_risks if r.title.lower() not in existing_titles]
+        if not added:
+            return assessment
+
+        assessment.risks.extend(added)
+        assessment.overall_risk = self._aggregate_risk(r.risk_level for r in assessment.risks)
+        return assessment
 
     def _build_query(self, request: UpgradeRequest) -> str:
         deps = ", ".join(request.dependencies) if request.dependencies else "none"
         integrations = ", ".join(request.integrations) if request.integrations else "none"
+        # Fold in consumer languages/protocols so integration-specific KB cards surface.
+        consumer_terms: list[str] = []
+        for d in request.integration_details:
+            parts = [p for p in (d.consumer_technology, d.protocol) if p]
+            if parts:
+                consumer_terms.append(" ".join(parts))
+        consumers = ", ".join(consumer_terms) if consumer_terms else "none"
         return (
             f"{request.technology_type.value} upgrade from {request.current_version} "
-            f"to {request.target_version}. Dependencies: {deps}. Integrations: {integrations}."
+            f"to {request.target_version}. Dependencies: {deps}. Integrations: {integrations}. "
+            f"Consumer drivers/protocols: {consumers}."
         )
+
+    @staticmethod
+    def _format_consumers(request: UpgradeRequest) -> str:
+        if not request.integration_details:
+            return "  (none provided)"
+        lines = []
+        for d in request.integration_details:
+            tech = d.consumer_technology or "unknown-language"
+            proto = d.protocol or "unknown-protocol"
+            team = f", team: {d.owner_team}" if d.owner_team else ""
+            lines.append(f"  - {d.name} ({tech} via {proto}{team})")
+        return "\n".join(lines)
 
     @staticmethod
     def _format_context(docs: list[dict]) -> str:
@@ -84,6 +141,8 @@ class AssessmentService:
 - Target Version: {request.target_version}
 - Dependencies: {', '.join(request.dependencies) or 'none'}
 - Integrations: {', '.join(request.integrations) or 'none'}
+- Consumers (language / protocol):
+{self._format_consumers(request)}
 - Environment: {request.environment}
 - Notes: {request.notes or 'none'}
 
@@ -156,7 +215,14 @@ Produce the JSON assessment."""
                 )
             )
 
-        if request.integrations:
+        integration_risks = analyze_integrations(
+            technology_type=request.technology_type,
+            integration_details=request.integration_details,
+            plain_integrations=request.integrations,
+        )
+        if integration_risks:
+            risks.extend(integration_risks)
+        elif request.integrations:
             risks.append(
                 IdentifiedRisk(
                     category="integration",

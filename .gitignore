@@ -7,6 +7,9 @@ venv/
 env/
 .chroma/
 data/chroma/
+chroma_data/
+scan_result.json
+.obsidian/
 *.log
 .pytest_cache/
 .coverage
